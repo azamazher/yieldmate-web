@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YieldMate | AI Fruit Inventory</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+
+    <link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=general-sans@400,500,600&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="script.js" defer></script>
+</head>
+
+<body class="loading-state">
+
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="scan-wrapper">
+                <div class="loader-emoji">🍎</div>
+                <div class="loader-scanline"></div>
+            </div>
+            <h1 class="loader-text">YieldMate<span style="color:var(--primary)">.</span></h1>
+            <div class="loading-bar-container">
+                <div class="loading-bar-fill"></div>
+            </div>
+            <p class="loader-status">Initializing Neural Network...</p>
+        </div>
+    </div>
+
+    <div class="blob-cont">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div style="font-weight: 700; font-size: 1.5rem;">🍎 YieldMate</div>
+            <nav style="display: flex; align-items: center; gap: 20px;">
+                <button id="themeToggle" class="btn-icon" aria-label="Toggle Dark Mode">
+                    🌙
+                </button>
+                <a href="#video-demos" class="btn">Watch Demos</a>
+            </nav>
+        </header>
+
+        <section class="hero">
+            <div class="hero-grid">
+                <div>
+                    <div class="badge">
+                        <div class="pulsate"></div> Live Detection Active
+                    </div>
+                    <h1>Your pocket <br>AI Inventory.</h1>
+                    <p style="font-size: 1.2rem; opacity: 0.8; margin: 20px 0;">
+                        Point your camera and get instant counts.
+                        Powered by <strong>YOLOv8 Nano</strong> for lightning-fast edge computing.
+                    </p>
+                    <button class="btn"
+                        onclick="document.getElementById('demo-area').scrollIntoView({behavior: 'smooth'})">Get APK
+                    </button>
+                    <button class="btn"
+                        onclick="window.open('https://github.com/azamazher/YieldMate/tree/localhost-server', '_blank')">
+                        Repository</button>
+                </div>
+
+                <div id="demo-area">
+                    <div class="phone-mockup">
+                        <div class="scanner-header">
+                            <small style="font-weight: 700;">LIVE CAM</small>
+                            <small>🔋 100%</small>
+                        </div>
+                        <div class="scanner-area" id="scannerArea" onclick="addFruit()">
+                            <div class="scan-line"></div>
+                            <div
+                                style="position: absolute; top:50%; width:100%; text-align: center; opacity: 0.5; pointer-events: none;">
+                                <small>Tap to Simulate AI Detection</small>
+                            </div>
+                        </div>
+                        <div class="results-panel">
+                            <div class="results-summary">
+                                <div><small
+                                        style="text-transform: uppercase; color: #888; font-weight: 700; letter-spacing: 1px;">Total
+                                        Detected</small></div>
+                                <div class="total-badge" id="totalDisplay">0</div>
+                            </div>
+                            <div class="breakdown-list" id="breakdownList">
+                                <div
+                                    style="grid-column: span 2; text-align: center; font-size: 0.8rem; opacity: 0.6; margin-top: 20px;">
+                                    Waiting for input...</div>
+                            </div>
+                            <button onclick="resetCount()" class="btn-reset">Reset Scan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <h2 style="text-align: center; margin-bottom: 10px;">System Architecture.</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Hybrid processing pipeline: Seamlessly
+                switching between Edge and Cloud.</p>
+
+            <div class="glass-panel">
+                <div class="arch-wrapper">
+                    <div class="arch-node node-user">
+                        <div style="font-size: 2rem;">👤</div>
+                        <strong>User Action</strong>
+                        <small>Capture / Upload</small>
+                    </div>
+                    <div class="arch-node node-process">
+                        <div style="font-size: 1.5rem;">⚙️</div>
+                        <strong>Pre-process</strong>
+                        <small>Resize & Load</small>
+                    </div>
+                    <div class="arch-node node-decision">
+                        <div class="toggle-icon">
+                            <div class="toggle-circle"></div>
+                        </div>
+                        <small>Mode Select</small>
+                    </div>
+                    <div class="arch-node node-offline">
+                        <div class="status-dot dot-green"></div>
+                        <strong>Offline Core</strong>
+                        <small>Local TFLite Model</small>
+                        <small>YOLOv8-Nano</small>
+                        <div class="tech-tag">On-Device</div>
+                    </div>
+                    <div class="arch-node node-online">
+                        <div class="status-dot dot-blue"></div>
+                        <strong>Online Cloud</strong>
+                        <small>Flask API Server</small>
+                        <small>Full YOLOv8</small>
+                        <div class="tech-tag">HTTP POST</div>
+                    </div>
+                    <div class="arch-node node-result">
+                        <div style="font-size: 2rem;">📲</div>
+                        <strong>UI Interface</strong>
+                        <small>Overlay & History</small>
+                    </div>
+
+                    <svg class="arch-svg">
+                        <path id="path-1" class="arch-path" d="M100,150 L180,150" />
+                        <circle class="arch-packet" r="3">
+                            <animateMotion dur="2s" repeatCount="indefinite">
+                                <mpath href="#path-1" />
+                            </animateMotion>
+                        </circle>
+                        <path id="path-2" class="arch-path" d="M300,150 L380,150" />
+                        <circle class="arch-packet" r="3">
+                            <animateMotion dur="2s" begin="0.5s" repeatCount="indefinite">
+                                <mpath href="#path-2" />
+                            </animateMotion>
+                        </circle>
+                        <path id="path-3" class="arch-path path-green" d="M430,125 L430,80 L500,80" />
+                        <circle class="arch-packet packet-green" r="3">
+                            <animateMotion dur="2s" begin="1s" repeatCount="indefinite">
+                                <mpath href="#path-3" />
+                            </animateMotion>
+                        </circle>
+                        <path id="path-4" class="arch-path path-blue" d="M430,175 L430,220 L500,220" />
+                        <circle class="arch-packet packet-blue" r="3">
+                            <animateMotion dur="2s" begin="1s" repeatCount="indefinite">
+                                <mpath href="#path-4" />
+                            </animateMotion>
+                        </circle>
+                        <path id="path-5" class="arch-path path-green" d="M660,80 L730,80 L730,110" />
+                        <circle class="arch-packet packet-green" r="3">
+                            <animateMotion dur="2s" begin="2s" repeatCount="indefinite">
+                                <mpath href="#path-5" />
+                            </animateMotion>
+                        </circle>
+                        <path id="path-6" class="arch-path path-blue" d="M660,220 L730,220 L730,190" />
+                        <circle class="arch-packet packet-blue" r="3">
+                            <animateMotion dur="2s" begin="2s" repeatCount="indefinite">
+                                <mpath href="#path-6" />
+                            </animateMotion>
+                        </circle>
+                    </svg>
+                </div>
+
+                <div class="arch-explainer">
+                    <div class="arch-step">
+                        <strong style="color:var(--text-main)">1. Input & Decision:</strong>
+                        The user captures an image. The app checks network status to decide the route.
+                    </div>
+                    <div class="arch-step">
+                        <strong style="color:var(--accent)">2. Offline Path (Green):</strong>
+                        Data routed to <strong>TFLite Module</strong>. Runs quantized YOLOv8-nano on the NPU.
+                    </div>
+                    <div class="arch-step">
+                        <strong style="color:var(--blue)">3. Online Path (Blue):</strong>
+                        Data sent via HTTP POST to <strong>Flask Server</strong> for full-scale YOLOv8 processing.
+                    </div>
+                    <div class="arch-step">
+                        <strong style="color:var(--text-main)">4. Unification:</strong>
+                        Results are normalized and displayed on the <strong>User Interface</strong>.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <h2 style="text-align: center; margin-bottom: 10px;">Intelligent Tracking.</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Solving the "Double Count" problem with
+                IoU Logic.</p>
+
+            <div class="glass-panel">
+                <div class="iou-diagram-wrapper">
+                    <div class="d-tracker-box">
+                        <div class="d-tracker-label">IOU-Based FruitTracker</div>
+                    </div>
+
+                    <div class="d-node d-cam">📷<br>Live</div>
+                    <div class="d-node d-yolo">YOLOv8<br>Nano</div>
+                    <div class="d-node d-iou-calc">IoU Calc<br>& Matrix</div>
+                    <div class="d-node d-greedy">Greedy Match<br>(IoU > 0.3)</div>
+                    <div class="d-node d-smooth">Temporal<br>Smoothing</div>
+                    <div class="d-node d-new-id">Assign<br>New ID</div>
+                    <div class="d-node d-disappear">Disappearance<br>Handling</div>
+                    <div class="d-node d-count">Counting<br>Logic</div>
+                    <div class="d-node d-endpoint">/detect_live<br>API</div>
+
+                    <div class="d-app">
+                        <div class="sim-screen">
+                            <div class="sim-overlay"></div>
+                            <div class="sim-box sim-f1">
+                                <div class="sim-label">ID:1</div>
+                            </div>
+                            <div class="sim-box sim-f2">
+                                <div class="sim-label">ID:2</div>
+                            </div>
+                            <div
+                                style="position:absolute; bottom:5px; left:0; width:100%; text-align:center; font-size:10px; color:white;">
+                                Total: 2</div>
+                        </div>
+                    </div>
+
+                    <svg class="d-svg">
+                        <path id="p1" class="d-path" d="M60,250 L120,250" />
+                        <circle class="d-packet" r="4">
+                            <animateMotion dur="2s" repeatCount="indefinite">
+                                <mpath href="#p1" />
+                            </animateMotion>
+                        </circle>
+                        <path id="p2" class="d-path" d="M220,250 L280,140" />
+                        <circle class="d-packet" r="4">
+                            <animateMotion dur="2s" repeatCount="indefinite">
+                                <mpath href="#p2" />
+                            </animateMotion>
+                        </circle>
+                        <path id="p3" class="d-path" d="M390,140 L500,140" />
+                        <path id="p4" class="d-path" d="M560,165 L560,200 L415,200 L415,250" />
+                        <text x="450" y="195" class="axis-text">Match</text>
+                        <path id="p5" class="d-path" d="M560,165 L560,200 L610,200 L610,250" />
+                        <text x="580" y="195" class="axis-text">New</text>
+                        <path id="p6" class="d-path" d="M415,310 L415,375" />
+                        <path id="p7" class="d-path" d="M610,310 L610,375" />
+                        <path id="p8" class="d-path" d="M350,280 L300,280 L300,180"
+                            style="stroke: var(--accent); opacity:0.5;" />
+                        <path id="p9" class="d-path" d="M620,140 L850,225" />
+                        <path id="p10" class="d-path" d="M950,250 L980,250" />
+                        <circle class="d-packet" r="4">
+                            <animateMotion dur="3s" repeatCount="indefinite">
+                                <mpath href="#p3" />
+                            </animateMotion>
+                        </circle>
+                        <circle class="d-packet" r="4">
+                            <animateMotion dur="4s" repeatCount="indefinite">
+                                <mpath href="#p9" />
+                            </animateMotion>
+                        </circle>
+                    </svg>
+                </div>
+
+                <div class="iou-explainer">
+                    <h4 style="margin-bottom: 20px;">How It Works:</h4>
+                    <div class="iou-step">
+                        <div class="step-num">1</div>
+                        <div><strong>Greedy Matching:</strong> Comparing detections to tracked objects. If IoU > 0.3,
+                            they are the same fruit.</div>
+                    </div>
+                    <div class="iou-step">
+                        <div class="step-num">2</div>
+                        <div><strong>Object Permanence:</strong> The simulation in the Flutter diagram (right) shows our
+                            "Sticky ID" logic. Even when fruits cross paths, IDs remain unique.</div>
+                    </div>
+                    <div class="iou-step">
+                        <div class="step-num">3</div>
+                        <div><strong>Temporal Smoothing:</strong> Using a weighted average
+                            (<code>0.7*old + 0.3*new</code>) to ensure smooth bounding box movement.</div>
+                    </div>
+                    <div class="iou-step">
+                        <div class="step-num">4</div>
+                        <div><strong>Counting Logic:</strong> Global count increments only on new ID assignment,
+                            preventing double-counting.</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" id="video-demos">
+            <h2 style="text-align: center;">Development & Testing.</h2>
+            <p style="text-align: center; margin-bottom: 20px; opacity: 0.7;">Comparing the app interface against
+                real-world field tests.</p>
+            <div style="display: flex; justify-content: center;">
+                <div class="video-box" style="width: 100%; max-width: 800px;">
+                    <div class="video-wrapper">
+                        <iframe src="https://drive.google.com/file/d/190TyoOeMfX6yvgFcMGFXnc57kT5GAXYI/view?usp=sharing"
+                            width="640" height="480" allow="autoplay"
+                            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none;">
+                        </iframe>
+                    </div>
+                    <div class="video-label">📱 App Interface Walkthrough</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <h2 style="text-align: center; margin-bottom: 10px;">Model Analytics.</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Trained on Reality.</p>
+
+            <div class="glass-panel" style="margin-bottom: 40px;">
+                <div class="graph-grid">
+                    <div class="graph-frame graph-container" id="f1GraphContainer">
+                        <div id="graphTooltip" class="graph-tooltip">
+                            <div class="tooltip-label">Class</div>
+                            <div class="tooltip-score" id="tooltipScore">0.00</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom: 20px;">
+                            <span class="badge badge-tech">YOLOv8 Nano</span>
+                            <span class="badge badge-tech">Roboflow API</span>
+                        </div>
+                        <h3>Precision Metrics</h3>
+                        <p style="margin-bottom: 20px;">
+                            The interactive graph highlights the F1-Confidence curve. Hover over any line to see
+                            individual class performance. Our model maintains high precision even at lower confidence
+                            thresholds.
+                        </p>
+                        <div class="stat-row">
+                            <div class="stat-item">
+                                <div class="stat-val">0.89</div>
+                                <div class="stat-lbl">Mean F1 Score</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-val">0.554</div>
+                                <div class="stat-lbl">Best Threshold</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-panel">
+                <div class="loss-grid">
+                    <div>
+                        <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.2rem;">Train Box Loss</h3>
+                        <div class="loss-graph-box" id="boxLossContainer"></div>
+                    </div>
+                    <div>
+                        <h3 style="text-align: center; margin-bottom: 15px; font-size: 1.2rem;">Train Class Loss</h3>
+                        <div class="loss-graph-box" id="clsLossContainer"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" id="resources">
+            <h2 style="text-align: center; margin-bottom: 10px;">Developer Resources.</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Empowering the community with our core
+                training pipelines.</p>
+
+            <div class="resources-grid">
+                <!-- Offline Model Card -->
+                <div class="resource-card">
+                    <div class="resource-icon-box">
+                        <span class="resource-icon">⚡</span>
+                    </div>
+                    <div class="resource-content">
+                        <h3>Offline Model Trainer</h3>
+                        <p>The complete training pipeline. Optimized for edge deployment using TFLite quantization.</p>
+                        <div class="resource-meta">
+                            <span class="badge badge-tech">Jupyter Notebook</span>
+                            <span class="badge badge-tech">Python 3.8+</span>
+                        </div>
+                        <a href="offline_model_train.ipynb" download class="btn-resource">
+                            <span>Download .ipynb</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Fruit Doctor Card -->
+                <div class="resource-card doctor-card">
+                    <div class="resource-icon-box">
+                        <span class="resource-icon">🩺</span>
+                    </div>
+                    <div class="resource-content">
+                        <h3>Fruit Doctor Kit</h3>
+                        <p>Medical-grade rot detection capability resources. Includes dataset samples and labeling
+                            guide.
+                        </p>
+                        <div class="resource-meta">
+                            <span class="badge badge-tech">Dataset</span>
+                            <span class="badge badge-tech">Documentation</span>
+                        </div>
+                        <a href="fruit_doctor_data.zip" download class="btn-resource">
+                            <span>Download Kit</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+                <!-- Multifruit Dataset Card -->
+                <div class="resource-card dataset-card">
+                    <div class="resource-icon-box">
+                        <span class="resource-icon">🍎</span>
+                    </div>
+                    <div class="resource-content">
+                        <h3>Multifruit YOLOv8</h3>
+                        <p>Our custom-trained core dataset. 10,000+ labeled images across 8 fruit classes.</p>
+                        <div class="resource-meta">
+                            <span class="badge badge-tech">v8.2</span>
+                            <span class="badge badge-tech">Roboflow</span>
+                        </div>
+                        <a href="multifruit_dataset.zip" download class="btn-resource">
+                            <span>Download Data</span>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding" id="research">
+            <h2 style="text-align: center; margin-bottom: 10px;">Full Documentation.</h2>
+            <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Read the complete dissertation thesis.</p>
+            <div class="pdf-wrapper" id="securePDF">
+                <div class="tablet-frame">
+                    <div class="tablet-cam"></div>
+                    <div class="pdf-overlay">
+                        <div class="watermark">READ ONLY • PREVIEW</div>
+                    </div>
+                    <iframe src="Final_Report.pdf#toolbar=0&navpanes=0&scrollbar=0" class="pdf-frame"
+                        title="Dissertation PDF">
+                    </iframe>
+                </div>
+                <div style="text-align: center; margin-top: 15px;">
+                    <span class="badge badge-tech" style="background: #eee; border:none; color:#666;">🔒 Secure Viewer
+                        Active</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-padding">
+            <h2 style="text-align: center; margin-bottom: 50px;">The Future Roadmap.</h2>
+            <div class="roadmap-grid">
+                <div class="roadmap-card card-offline">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                        <span style="font-size: 2.5rem;">📶</span>
+                        <span
+                            style="font-size: 0.8rem; font-weight: 700; background: var(--tag-bg); padding: 6px 12px; border-radius: 20px;">COMING
+                            Q3</span>
+                    </div>
+                    <h3>Offline AI Model</h3>
+                    <p style="margin-top: 15px;">An interactive chatbot. Compressed quantization allows the model to run
+                        100% locally on the
+                        device NPU.</p>
+                </div>
+                <div class="roadmap-card card-doctor">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                        <span style="font-size: 2.5rem;">🩺</span>
+                        <span
+                            style="font-size: 0.8rem; font-weight: 700; background: #f3e5f5; color: var(--purple); padding: 6px 12px; border-radius: 20px;">IN
+                            BETA</span>
+                    </div>
+                    <h3 style="color: var(--purple);">The Fruit Doctor AI</h3>
+                    <p style="margin-top: 15px;">Upload photos of questionable fruit
+                        and see whether its rot or not.</p>
+                </div>
+                <div class="roadmap-card card-community">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 20px;">
+                        <span style="font-size: 2.5rem;">👥</span>
+                        <span
+                            style="font-size: 0.8rem; font-weight: 700; background: #e0f7fa; color: var(--teal); padding: 6px 12px; border-radius: 20px;">PLANNED</span>
+                    </div>
+                    <h3 style="color: var(--teal);">Community Hub</h3>
+                    <p style="margin-top: 15px;">A dedicated space for growers and developers to ask questions, share
+                        datasets, and exchange agricultural knowledge.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer class="aston-section">
+        <div class="container">
+            <div class="aston-grid">
+                <div>
+                    <img src="Aston-University-logo.png" alt="Aston University Logo" class="aston-logo">
+                    <div class="uni-disclaimer">
+                        <strong>Project Code:</strong> CS-FYP-2024<br>
+                        <strong>Supervisor:</strong> [Dr. Dan Dai]<br><br>
+                        Submitted in partial fulfillment of the requirements for the degree of Master of Science at
+                        Aston University.
+                    </div>
+                </div>
+                <div>
+                    <h4 style="margin-bottom: 15px;">Open Source License</h4>
+                    <div class="license-box">
+                        <strong>MIT License</strong><br><br>
+                        Copyright (c) 2024 Aazam Azher<br><br>
+                        Permission is hereby granted, free of charge, to any person obtaining a copy of this software...
+                        <br><br>
+                        <span style="opacity: 0.6;">Provided that the above copyright notice and this permission notice
+                            shall be included.</span>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 50px; font-size: 0.8rem; opacity: 0.5;">
+                &copy; 2026 Developed by Aazam Azher for Aston University Dissertation.
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>
