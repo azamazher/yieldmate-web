@@ -60,7 +60,8 @@
                         Powered by <strong>YOLOv8 Nano</strong> for lightning-fast edge computing.
                     </p>
                     <button class="btn"
-                        onclick="window.open('https://drive.google.com/file/d/1f9XpCrhuMBR4Eq_-8Qct8GaZ0BuXf8tX/view?usp=sharing', '_blank')">Get APK
+                        onclick="window.open('https://drive.google.com/file/d/1f9XpCrhuMBR4Eq_-8Qct8GaZ0BuXf8tX/view?usp=sharing', '_blank')">Get
+                        APK
                     </button>
                     <button class="btn"
                         onclick="window.open('https://github.com/azamazher/YieldMate/tree/localhost-server', '_blank')">
@@ -456,13 +457,24 @@
         <section class="section-padding" id="research">
             <h2 style="text-align: center; margin-bottom: 10px;">Full Documentation.</h2>
             <p style="text-align: center; margin-bottom: 40px; opacity: 0.8;">Read the complete dissertation thesis.</p>
+            <div class="pdf-controls">
+                <button class="glass-btn active" onclick="switchPDF(0)">Main Report</button>
+                <button class="glass-btn" onclick="switchPDF(1)" href="Documents/Model_Training.pdf">Model
+                    Training</button>
+                <button class="glass-btn" onclick="switchPDF(2)" href="Documents/Model_Comparison.pdf">Model
+                    Comparision</button>
+                <button class="glass-btn" onclick="switchPDF(3)" href="Documents/Tensor_comparison.pdf">Tensor
+                    Configeration</button>
+                <button class="glass-btn" onclick="switchPDF(4)" href="Documents/Offline_chatbot.pdf">Offline
+                    Chatbot</button>
+            </div>
             <div class="pdf-wrapper" id="securePDF">
                 <div class="tablet-frame">
                     <div class="tablet-cam"></div>
                     <div class="pdf-overlay">
                         <div class="watermark">READ ONLY • PREVIEW</div>
                     </div>
-                    <iframe src="Final_Report.pdf#toolbar=0&navpanes=0&scrollbar=0" class="pdf-frame"
+                    <iframe id="pdfViewer" src="Final_Report.pdf#toolbar=0&navpanes=0&scrollbar=0" class="pdf-frame"
                         title="Dissertation PDF">
                     </iframe>
                 </div>
