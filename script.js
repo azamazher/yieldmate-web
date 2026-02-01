@@ -254,3 +254,40 @@ document.querySelectorAll('.roadmap-card, .glass-panel, .video-box, .loss-graph-
     el.style.transition = 'all 0.6s ease-out';
     observer.observe(el);
 });
+
+// --- 5. PDF SWITCHER LOGIC ---
+const pdfFiles = [
+    "Final_Report.pdf",
+    "Documents/Model_Training.pdf",
+    "Documents/Model_Comparison.pdf",
+    "Documents/Tensor_comparison.pdf",
+    "Documents/Offline_chatbot.pdf"
+];
+
+function switchPDF(index) {
+    const viewer = document.getElementById('pdfViewer');
+    const buttons = document.querySelectorAll('.glass-btn');
+    const activeBtn = buttons[index];
+
+    // 1. Try to get the specific file from the button's href
+    // 2. Fallback to the array if href is missing/empty
+    let targetFile = activeBtn.getAttribute('href');
+
+    if (!targetFile || targetFile === "") {
+        targetFile = pdfFiles[index];
+    }
+
+    // Update PDF source if we have a valid target
+    if (targetFile) {
+        viewer.src = targetFile + "#toolbar=0&navpanes=0&scrollbar=0";
+    }
+
+    // Update active button state
+    buttons.forEach((btn, idx) => {
+        if (idx === index) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+}
